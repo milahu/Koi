@@ -78,6 +78,7 @@ set(koi_SRC
     src/plugins/colorscheme.cpp
     src/plugins/gtk.cpp
     src/plugins/icons.cpp
+    src/plugins/konsole.cpp
     src/plugins/kvantumstyle.cpp
     src/plugins/plasmastyle.cpp
     src/plugins/wallpaper.cpp
