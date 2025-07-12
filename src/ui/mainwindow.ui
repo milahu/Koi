@@ -464,7 +464,7 @@
              <x>0</x>
              <y>0</y>
              <width>559</width>
-             <height>772</height>
+             <height>784</height>
             </rect>
            </property>
            <layout class="QFormLayout" name="formLayout">
@@ -911,14 +911,14 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_19">
                 <item>
-                 <widget class="QComboBox" name="darkDropKonsoleStyle">
+                 <widget class="QComboBox" name="lightDropKonsoleStyle">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="lightDropKonsoleStyle">
+                 <widget class="QComboBox" name="darkDropKonsoleStyle">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
