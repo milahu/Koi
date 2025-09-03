@@ -8,7 +8,10 @@ TrayManager::TrayManager(MainWindow *mainWindow, Utils *utils, QObject *parent)
     : QObject(parent), mainWindow(mainWindow), utils(utils) {
 
   trayIcon = new QSystemTrayIcon(this);
-  QIcon icon = QIcon::fromTheme("koi_tray", QIcon(":/resources/icons/koi_tray.png"));
+  // this can produce an invisible system tray icon
+  // https://bugreports.qt.io/browse/QTBUG-139779
+  // QIcon icon = QIcon::fromTheme("koi_tray", QIcon(":/resources/icons/koi_tray.png"));
+  QIcon icon = QIcon(":/resources/icons/koi_tray.png");
   trayIcon->setIcon(icon);
   trayIcon->setContextMenu(createMenu());
 
