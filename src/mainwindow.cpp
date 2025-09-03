@@ -145,16 +145,16 @@ void MainWindow::loadPrefs() {
       utils->settings->value("KvantumStyle/dark").toString());
 
   // Load Konsole profile settings
-  if (utils.settings->value("KonsoleProfile/enabled").toBool()) {
+  if (utils->settings->value("KonsoleProfile/enabled").toBool()) {
     ui->konsoleStyleCheckBox->setChecked(true);
   } else {
     ui->konsoleStyleCheckBox->setChecked(false);
   }
   // sets the displayed text on the combo box of the kvantum style.
   ui->lightDropKonsoleStyle->setCurrentText(
-      utils.settings->value("KonsoleProfile/light").toString());
+      utils->settings->value("KonsoleProfile/light").toString());
   ui->darkDropKonsoleStyle->setCurrentText(
-      utils.settings->value("KonsoleProfile/dark").toString());
+      utils->settings->value("KonsoleProfile/dark").toString());
 
   // Load Wallpaper prefs
   if (utils->settings->value("Wallpaper/enabled").toBool()) {
@@ -252,13 +252,13 @@ void MainWindow::savePrefs() {
 
   // Konsole Profile enabling
   if (ui->konsoleStyleCheckBox->isChecked() == 0) {
-    utils.settings->setValue("KonsoleProfile/enabled", false);
+    utils->settings->setValue("KonsoleProfile/enabled", false);
   } else {
-    utils.settings->setValue("KonsoleProfile/enabled", true);
+    utils->settings->setValue("KonsoleProfile/enabled", true);
   }
   // Kvantum Style Theme saving Prefs
-  utils.settings->setValue("KonsoleProfile/light", lightKonsole);
-  utils.settings->setValue("KonsoleProfile/dark", darkKonsole);
+  utils->settings->setValue("KonsoleProfile/light", lightKonsole);
+  utils->settings->setValue("KonsoleProfile/dark", darkKonsole);
 
   // Wallpaper enabling
   if (ui->wallCheckBox->isChecked() == 0) {
@@ -317,7 +317,7 @@ void MainWindow::refreshDirs() // Refresh function to find new themes
       kvantumStyle); // adds the new loaded kvantum styles
   ui->darkDropKvantumStyle->addItems(kvantumStyle);
   // Refresh Konsole Profiles
-  QStringList konsoleProfiles = utils.getKonsoleProfiles();
+  QStringList konsoleProfiles = utils->getKonsoleProfiles();
   ui->lightDropKonsoleStyle->clear();
   ui->lightDropKonsoleStyle->addItems(konsoleProfiles);
   ui->darkDropKonsoleStyle->clear();
@@ -398,14 +398,14 @@ int MainWindow::prefsSaved() // Lots of ifs, don't know how to do it any other
     return 0;
   }
   if (ui->konsoleStyleCheckBox->isChecked() !=
-      utils.settings->value("KonsoleProfile/enabled").toBool()) {
+      utils->settings->value("KonsoleProfile/enabled").toBool()) {
     return 0;
   }
   if (lightKonsole !=
-      utils.settings->value("KonsoleProfile/light").toString()) {
+      utils->settings->value("KonsoleProfile/light").toString()) {
     return 0;
   }
-  if (darkKonsole != utils.settings->value("KonsoleProfile/dark").toString()) {
+  if (darkKonsole != utils->settings->value("KonsoleProfile/dark").toString()) {
     return 0;
   }
   if (ui->wallCheckBox->isChecked() !=
