@@ -193,6 +193,8 @@ QStringList Utils::getIconThemes(void) { return icons.getThemes(); }
 QStringList Utils::getGtkThemes(void) { return gtk.getThemes(); }
 // Get all available kvantum styles
 QStringList Utils::getKvantumStyles(void) { return kvantumStyle.getThemes(); }
+// Get all available Konsole profiles
+QStringList Utils::getKonsoleProfiles(void) { return konsole.getThemes(); }
 // Manage switching themes functions
 void Utils::toggle() {
   const auto current =
@@ -210,6 +212,7 @@ void Utils::goLight() {
   goLightIcons();
   goLightGtk();
   goLightKvantumStyle();
+  goLightKonsole();
   goLightWall();
   goLightScript();
   restartProcess();
@@ -226,6 +229,7 @@ void Utils::goDark() {
   goDarkIcons();
   goDarkGtk();
   goDarkKvantumStyle();
+  goDarkKonsole();
   goDarkWall();
   goDarkScript();
   restartProcess();
@@ -274,6 +278,16 @@ void Utils::goLightGtk() {
 void Utils::goDarkGtk() {
   if (settings->value("GTKTheme/enabled").toBool()) {
     gtk.setTheme(settings->value("GTKTheme/dark").toString());
+  }
+}
+void Utils::goLightKonsole() {
+  if (settings->value("KonsoleProfile/enabled").toBool()) {
+    konsole.setTheme(settings->value("KonsoleProfile/light").toString());
+  }
+}
+void Utils::goDarkKonsole() {
+  if (settings->value("KonsoleProfile/enabled").toBool()) {
+    konsole.setTheme(settings->value("KonsoleProfile/dark").toString());
   }
 }
 void Utils::goLightKvantumStyle() {

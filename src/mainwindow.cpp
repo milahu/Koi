@@ -1,18 +1,16 @@
 #include "headers/mainwindow.h"
-#include "headers/trayManager.h"
 #include "headers/about.h"
+#include "headers/trayManager.h"
 #include "ui/ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent, Utils* utils)
-    : QMainWindow(parent), ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget *parent, Utils *utils)
+    : QMainWindow(parent), ui(new Ui::MainWindow) {
   this->isSettingLoaded = false;
   this->utils = utils;
   trayManager = new TrayManager(this, utils);
   trayManager->showTrayIcon();
 }
-void MainWindow::initSettingsInterface()
-{
+void MainWindow::initSettingsInterface() {
   this->utils->initialiseSettings();
   ui->setupUi(this);
   ui->mainStack->setCurrentIndex(0);
@@ -21,13 +19,14 @@ void MainWindow::initSettingsInterface()
   ui->resMsg->hide();
   auto actionRes = new QAction("Restart", this);
   actionRes->setIcon(QIcon::fromTheme("view-refresh"));
-  connect(actionRes, &QAction::triggered, this, &MainWindow::on_actionRestart_triggered);
+  connect(actionRes, &QAction::triggered, this,
+          &MainWindow::on_actionRestart_triggered);
   ui->resMsg->addAction(actionRes);
   this->isSettingLoaded = true;
 }
 MainWindow::~MainWindow() {
-    this->setVisible(0);
-    delete ui;
+  this->setVisible(0);
+  delete ui;
 }
 
 // Override window managing events
@@ -145,6 +144,18 @@ void MainWindow::loadPrefs() {
   ui->darkDropKvantumStyle->setCurrentText(
       utils->settings->value("KvantumStyle/dark").toString());
 
+  // Load Konsole profile settings
+  if (utils->settings->value("KonsoleProfile/enabled").toBool()) {
+    ui->konsoleStyleCheckBox->setChecked(true);
+  } else {
+    ui->konsoleStyleCheckBox->setChecked(false);
+  }
+  // sets the displayed text on the combo box of the kvantum style.
+  ui->lightDropKonsoleStyle->setCurrentText(
+      utils->settings->value("KonsoleProfile/light").toString());
+  ui->darkDropKonsoleStyle->setCurrentText(
+      utils->settings->value("KonsoleProfile/dark").toString());
+
   // Load Wallpaper prefs
   if (utils->settings->value("Wallpaper/enabled").toBool()) {
     ui->wallCheckBox->setChecked(true);
@@ -239,6 +250,16 @@ void MainWindow::savePrefs() {
   utils->settings->setValue("KvantumStyle/light", lightKvantumStyle);
   utils->settings->setValue("KvantumStyle/dark", darkKvantumStyle);
 
+  // Konsole Profile enabling
+  if (ui->konsoleStyleCheckBox->isChecked() == 0) {
+    utils->settings->setValue("KonsoleProfile/enabled", false);
+  } else {
+    utils->settings->setValue("KonsoleProfile/enabled", true);
+  }
+  // Kvantum Style Theme saving Prefs
+  utils->settings->setValue("KonsoleProfile/light", lightKonsole);
+  utils->settings->setValue("KonsoleProfile/dark", darkKonsole);
+
   // Wallpaper enabling
   if (ui->wallCheckBox->isChecked() == 0) {
     utils->settings->setValue("Wallpaper/enabled", false);
@@ -295,10 +316,17 @@ void MainWindow::refreshDirs() // Refresh function to find new themes
   ui->lightDropKvantumStyle->addItems(
       kvantumStyle); // adds the new loaded kvantum styles
   ui->darkDropKvantumStyle->addItems(kvantumStyle);
+  // Refresh Konsole Profiles
+  QStringList konsoleProfiles = utils->getKonsoleProfiles();
+  ui->lightDropKonsoleStyle->clear();
+  ui->lightDropKonsoleStyle->addItems(konsoleProfiles);
+  ui->darkDropKonsoleStyle->clear();
+  ui->darkDropKonsoleStyle->addItems(konsoleProfiles);
+
   loadPrefs();
 }
 void MainWindow::toggleVisibility() {
-  if(this->isSettingLoaded == false) {
+  if (this->isSettingLoaded == false) {
     initSettingsInterface();
   }
 
@@ -369,6 +397,17 @@ int MainWindow::prefsSaved() // Lots of ifs, don't know how to do it any other
       utils->settings->value("KvantumStyle/dark").toString()) {
     return 0;
   }
+  if (ui->konsoleStyleCheckBox->isChecked() !=
+      utils->settings->value("KonsoleProfile/enabled").toBool()) {
+    return 0;
+  }
+  if (lightKonsole !=
+      utils->settings->value("KonsoleProfile/light").toString()) {
+    return 0;
+  }
+  if (darkKonsole != utils->settings->value("KonsoleProfile/dark").toString()) {
+    return 0;
+  }
   if (ui->wallCheckBox->isChecked() !=
       utils->settings->value("Wallpaper/enabled").toBool()) {
     return 0;
@@ -391,7 +430,6 @@ int MainWindow::prefsSaved() // Lots of ifs, don't know how to do it any other
   }
   return 1;
 }
-
 
 // Functionality of buttons - Related to program navigation, interaction and
 // saving settings
@@ -491,6 +529,11 @@ void MainWindow::on_kvantumStyleCheckBox_stateChanged(
   ui->darkDropKvantumStyle->setEnabled(kvantumStyleEnabled);
   ui->darkKvantumStyle->setEnabled(kvantumStyleEnabled);
 }
+// Enable Konsole profiles plugin
+void MainWindow::on_konsoleStyleCheckBox_stateChanged(int konsoleEnabled) {
+  ui->lightDropKonsoleStyle->setEnabled(konsoleEnabled);
+  ui->darkDropKonsoleStyle->setEnabled(konsoleEnabled);
+}
 void MainWindow::on_lightDropStyle_currentTextChanged(
     const QString &lightStyleUN) // Set light plasma style
 {
@@ -539,6 +582,17 @@ void MainWindow::on_darkDropGtk_currentTextChanged(
 {
   darkGtk = darkGtkUN;
 }
+
+// Hooks for Konsole profile QComboBox.
+void MainWindow::on_lightDropKonsoleStyle_currentTextChanged(
+    const QString &lightKonsoleUN) {
+  lightKonsole = lightKonsoleUN;
+}
+void MainWindow::on_darkDropKonsoleStyle_currentTextChanged(
+    const QString &darkKonsoleUN) {
+  darkKonsole = darkKonsoleUN;
+}
+
 void MainWindow::on_lightDropKvantumStyle_currentTextChanged(
     const QString
         &lightKvantumStyleUN) // sets the kvantum style from the drop menu
